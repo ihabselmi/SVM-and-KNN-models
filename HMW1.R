@@ -1,0 +1,108 @@
+
+## Question 2.2.1##
+#Using the support vector machine function ksvm contained in the R package kernlab, 
+#find a good classifier for this data. Show the equation of your classifier, 
+#and how well it classifies the data points in the full data set. 
+
+#install.packages("kernlab")
+
+rm(list = ls())
+library(kernlab)
+set.seed(13)
+
+# Download Data
+setwd("~/Desktop/Georgia Tech Classes/Warming up/ISyE 6501")
+data <- read.delim("credit_card_data.csv", header=FALSE)
+head(data)
+tail(data)
+
+# Run the model
+
+model = ksvm(V11 ~ V1+V2+V3+V4+V5+V6+V7+V8+V9+V10, data = data, type = "C-svc", kernel = "vanilladot", C = 100, scaled = TRUE)
+
+model
+attributes(model)
+
+a = colSums(model@xmatrix[[1]] * model@coef[[1]])
+a0 = -model@b
+a
+a0
+# see what the model predicts
+pred <- predict(model,data[,1:10])
+pred
+# see what fraction of the model???s predictions match the actual classification
+sum(pred == data[,11]) / nrow(data)
+
+## Question 2.2.2##
+#You are welcome, but not required, to try other (nonlinear) kernels as well; 
+#we???re not covering them in this course, but they can sometimes be useful 
+#and might provide better predictions than vanilladot.
+
+### Kernel : Anovadot
+model_non_linear1 = ksvm(V11 ~ V1+V2+V3+V4+V5+V6+V7+V8+V9+V10, data = data, type = "C-svc", kernel = "anovadot", C = 100, scaled = TRUE)
+
+model_non_linear1
+attributes(model_non_linear1)
+
+a = colSums(model_non_linear1@xmatrix[[1]] * model_non_linear1@coef[[1]])
+a0 = -model_non_linear1@b
+a
+a0
+# see what the model predicts
+pred1 <- predict(model_non_linear1,data[,1:10])
+pred1
+# see what fraction of the model???s predictions match the actual classification
+sum(pred1 == data[,11]) / nrow(data)
+
+### Kernel : rbfdot
+model_non_linear2 = ksvm(V11 ~ V1+V2+V3+V4+V5+V6+V7+V8+V9+V10, data = data, type = "C-svc", kernel = "rbfdot", C = 100, scaled = TRUE)
+
+model_non_linear2
+attributes(model_non_linear2)
+
+a = colSums(model_non_linear2@xmatrix[[1]] * model_non_linear2@coef[[1]])
+a0 = -model_non_linear2@b
+a
+a0
+# see what the model predicts
+pred2 <- predict(model_non_linear2,data[,1:10])
+pred2
+# see what fraction of the model???s predictions match the actual classification
+sum(pred2 == data[,11]) / nrow(data)
+
+### Kernel : polydot
+model_non_linear3 = ksvm(V11 ~ V1+V2+V3+V4+V5+V6+V7+V8+V9+V10, data = data, type = "C-svc", kernel = "polydot", C = 100, scaled = TRUE)
+
+model_non_linear3
+attributes(model_non_linear3)
+
+a = colSums(model_non_linear3@xmatrix[[1]] * model_non_linear3@coef[[1]])
+a0 = -model_non_linear3@b
+a
+a0
+# see what the model predicts
+pred3 <- predict(model_non_linear3,data[,1:10])
+pred3
+# see what fraction of the model???s predictions match the actual classification
+sum(pred3 == data[,11]) / nrow(data)
+
+
+## Question 2.2.3##
+#install.packages("kknn")
+library(kknn)
+
+i = 167
+
+model_kknn = kknn(V11 ~ V1+V2+V3+V4+V5+V6+V7+V8+V9+V10, data[-i,], data[i,], k = 10, distance = 2, kernel = "optimal", scale = TRUE)
+
+# Compare prediction with true value
+fitted.values(model_kknn)
+data[i,11]
+
+
+
+
+
+
+
+
